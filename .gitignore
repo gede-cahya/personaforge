@@ -1,0 +1,5 @@
+node_modules/
+personaforge
+dist/
+.DS_Store
+*.log

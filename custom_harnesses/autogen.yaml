@@ -1,0 +1,53 @@
+schema_version: "1.0"
+id: "autogen"
+name: "Microsoft AutoGen Agent Harness"
+description: "Custom declarative adapter for Microsoft AutoGen AssistantAgent Python definition"
+output_format: "python"
+default_filename: "autogen_agent_{id}.py"
+
+sections:
+  header: "# Microsoft AutoGen AssistantAgent Definition\nfrom autogen import AssistantAgent\n"
+  identity_prefix: "# Identity & Persona\n"
+  psychometrics_prefix: "# Psychometrics\n"
+  style_prefix: "# Communication Rules\n"
+  reasoning_prefix: "# Problem Solving Protocol\n"
+  tools_prefix: "# Tools Configuration\n"
+  footer: "\n# End of AutoGen Agent configuration"
+
+tool_calling_convention:
+  type: "function_calling"
+  call_tag: "call_function"
+
+custom_template: |
+  # Generated for Microsoft AutoGen
+  from autogen import AssistantAgent
+
+  {{safe_id}}_agent = AssistantAgent(
+      name="{{id}}",
+      system_message="""You are {{name}}, {{title}}.
+
+  BIO & DIRECTIVE:
+  {{bio}}
+
+  LORE:
+  {{lore}}
+
+  COMMUNICATION STYLE:
+  Tone: {{tone}}
+  Conciseness Target: {{conciseness}}
+  Forbidden Patterns:
+  {{forbidden}}
+
+  REASONING PROTOCOL:
+  Mode: {{reasoning_mode}}
+
+  Reply TERMINATE when the task is completely finished with verified output.""",
+      llm_config={
+          "temperature": {{temperature}},
+          "top_p": {{top_p}},
+          "max_tokens": {{max_tokens}},
+          "config_list": [
+              {"model": "gpt-4o", "api_key": "os.environ.get('OPENAI_API_KEY')"}
+          ],
+      },
+  )
