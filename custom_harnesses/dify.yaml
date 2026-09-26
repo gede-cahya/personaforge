@@ -1,0 +1,40 @@
+schema_version: "1.0"
+id: "dify"
+name: "Dify.AI Agent Node Harness"
+description: "Custom declarative adapter for Dify.AI LLM Agent node prompt template"
+output_format: "yaml"
+default_filename: "{id}.dify.yaml"
+
+sections:
+  header: "# Dify.AI Agent Node DSL Configuration\n"
+  identity_prefix: "identity:\n"
+  psychometrics_prefix: "psychometrics:\n"
+  style_prefix: "style:\n"
+  reasoning_prefix: "reasoning:\n"
+  tools_prefix: "tools:\n"
+
+tool_calling_convention:
+  type: "json_markdown"
+  call_tag: "action"
+
+custom_template: |
+  app:
+    name: "{{name}}"
+    mode: "agent-chat"
+  model_config:
+    provider: "openai"
+    model: "gpt-4o"
+    parameters:
+      temperature: {{temperature}}
+      top_p: {{top_p}}
+      max_tokens: {{max_tokens}}
+    pre_prompt: |
+      You are {{name}}, {{title}}.
+      {{bio}}
+
+      Tone: {{tone}}
+      Reasoning Protocol: {{reasoning_mode}}
+      Key Constraints:
+      {{forbidden}}
+
+      Tool execution requirement: wrap all actions in ```action JSON ``` blocks.
