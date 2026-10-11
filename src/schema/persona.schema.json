@@ -1,0 +1,593 @@
+{
+  "$ref": "#/definitions/PersonaForgeUPSv2",
+  "definitions": {
+    "PersonaForgeUPSv2": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "type": "string",
+          "const": "persona"
+        },
+        "schema_version": {
+          "type": "string",
+          "default": "2.0"
+        },
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z0-9][a-z0-9-_]*$"
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Nama pendek, mis. 'Aoi'"
+        },
+        "tagline": {
+          "type": "string",
+          "default": "",
+          "description": "Deskripsi satu kalimat"
+        },
+        "version": {
+          "type": "string",
+          "default": "1.0.0"
+        },
+        "author": {
+          "type": "string",
+          "default": "anonymous"
+        },
+        "tags": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "default": []
+        },
+        "extends": {
+          "type": "string",
+          "description": "ID persona induk"
+        },
+        "traits": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "default": [],
+          "description": "Trait yang ditempel (sudah di-resolve)"
+        },
+        "role": {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "type": "string",
+              "const": "role"
+            },
+            "schema_version": {
+              "type": "string"
+            },
+            "id": {
+              "type": "string",
+              "pattern": "^[a-z0-9][a-z0-9-_]*$"
+            },
+            "name": {
+              "type": "string",
+              "minLength": 2
+            },
+            "description": {
+              "type": "string",
+              "default": ""
+            },
+            "expertise": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "default": []
+            },
+            "responsibilities": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "default": []
+            },
+            "reasoning": {
+              "type": "object",
+              "properties": {
+                "mode": {
+                  "type": "string",
+                  "enum": [
+                    "first_principles",
+                    "dialectical",
+                    "chain_of_thought",
+                    "tree_of_thoughts",
+                    "reflect_and_verify",
+                    "direct_execution",
+                    "ooda_loop"
+                  ],
+                  "default": "chain_of_thought"
+                },
+                "steps": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "default": []
+                },
+                "verify": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "default": []
+                }
+              },
+              "additionalProperties": false,
+              "default": {}
+            },
+            "output_format": {
+              "type": "object",
+              "properties": {
+                "code_first": {
+                  "type": "boolean",
+                  "default": false
+                },
+                "use_mermaid": {
+                  "type": "boolean",
+                  "default": false
+                },
+                "tables": {
+                  "type": "boolean",
+                  "default": false
+                },
+                "headings": {
+                  "type": "boolean",
+                  "default": false
+                }
+              },
+              "additionalProperties": false,
+              "default": {}
+            },
+            "capabilities": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "default": [],
+              "description": "Kemampuan/tools, mis. tool_calling, bash_execution"
+            },
+            "agentic": {
+              "type": "boolean",
+              "default": false,
+              "description": "True jika role ini menjalankan tool / loop otonom"
+            },
+            "rules": {
+              "type": "object",
+              "properties": {
+                "do": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "default": []
+                },
+                "dont": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "default": []
+                }
+              },
+              "additionalProperties": false,
+              "default": {}
+            },
+            "runtime": {
+              "type": "object",
+              "properties": {
+                "temperature": {
+                  "type": "number",
+                  "minimum": 0,
+                  "maximum": 2,
+                  "default": 0.7
+                },
+                "top_p": {
+                  "type": "number",
+                  "minimum": 0,
+                  "maximum": 1,
+                  "default": 0.95
+                },
+                "max_tokens": {
+                  "type": "integer",
+                  "exclusiveMinimum": 0,
+                  "default": 2048
+                },
+                "targets": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "object",
+                    "additionalProperties": {}
+                  },
+                  "default": {},
+                  "description": "Override per harness, mis. targets.ollama.base_model"
+                }
+              },
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "id",
+            "name"
+          ],
+          "additionalProperties": false
+        },
+        "language": {
+          "type": "object",
+          "properties": {
+            "primary": {
+              "type": "string",
+              "default": "en",
+              "description": "Bahasa utama balasan (kode ISO: id, en, ja, ...)"
+            },
+            "code_switch": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "default": [],
+              "description": "Bahasa lain yang boleh diselipkan"
+            }
+          },
+          "additionalProperties": false,
+          "default": {}
+        },
+        "variables": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "object",
+            "properties": {
+              "default": {
+                "type": [
+                  "string",
+                  "number",
+                  "boolean"
+                ]
+              },
+              "description": {
+                "type": "string"
+              },
+              "enum": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            },
+            "required": [
+              "default"
+            ],
+            "additionalProperties": false
+          },
+          "default": {}
+        },
+        "character": {
+          "type": "object",
+          "properties": {
+            "bio": {
+              "type": "string",
+              "minLength": 1
+            },
+            "backstory": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "default": []
+            },
+            "personality": {
+              "type": "object",
+              "properties": {
+                "big_five": {
+                  "type": "object",
+                  "properties": {
+                    "openness": {
+                      "type": "number",
+                      "minimum": 0,
+                      "maximum": 1,
+                      "default": 0.5
+                    },
+                    "conscientiousness": {
+                      "type": "number",
+                      "minimum": 0,
+                      "maximum": 1,
+                      "default": 0.5
+                    },
+                    "extraversion": {
+                      "type": "number",
+                      "minimum": 0,
+                      "maximum": 1,
+                      "default": 0.5
+                    },
+                    "agreeableness": {
+                      "type": "number",
+                      "minimum": 0,
+                      "maximum": 1,
+                      "default": 0.5
+                    },
+                    "neuroticism": {
+                      "type": "number",
+                      "minimum": 0,
+                      "maximum": 1,
+                      "default": 0.5
+                    }
+                  },
+                  "additionalProperties": false
+                },
+                "traits": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "default": [],
+                  "description": "Deskriptor sifat eksplisit, mis. 'manja', 'perfeksionis'"
+                },
+                "values": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "default": [],
+                  "description": "Hal yang paling dia pedulikan"
+                }
+              },
+              "additionalProperties": false,
+              "default": {}
+            },
+            "relationship": {
+              "type": "object",
+              "properties": {
+                "role_to_user": {
+                  "type": "string",
+                  "description": "Hubungan dengan user, mis. 'kekasih', 'mentor', 'butler'"
+                },
+                "address_user_as": {
+                  "type": "string",
+                  "description": "Cara memanggil user"
+                },
+                "self_reference": {
+                  "type": "string",
+                  "description": "Cara menyebut diri sendiri"
+                },
+                "dynamic": {
+                  "type": "string",
+                  "description": "Deskripsi singkat dinamika hubungan"
+                }
+              },
+              "additionalProperties": false,
+              "default": {}
+            }
+          },
+          "required": [
+            "bio"
+          ],
+          "additionalProperties": false
+        },
+        "voice": {
+          "type": "object",
+          "properties": {
+            "tone": {
+              "type": "string",
+              "minLength": 1
+            },
+            "register": {
+              "type": "string",
+              "enum": [
+                "casual",
+                "conversational",
+                "professional",
+                "formal",
+                "poetic",
+                "technical"
+              ],
+              "default": "conversational"
+            },
+            "verbosity": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1,
+              "default": 0.5,
+              "description": "0 = sangat singkat, 1 = sangat panjang"
+            },
+            "quirks": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "default": [],
+              "description": "Kebiasaan bicara khas"
+            },
+            "catchphrases": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "default": []
+            },
+            "emoji": {
+              "type": "string",
+              "enum": [
+                "never",
+                "sometimes",
+                "often"
+              ],
+              "default": "sometimes"
+            }
+          },
+          "required": [
+            "tone"
+          ],
+          "additionalProperties": false
+        },
+        "greeting": {
+          "type": "string"
+        },
+        "examples": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "user": {
+                "type": "string",
+                "minLength": 1
+              },
+              "assistant": {
+                "type": "string",
+                "minLength": 1
+              }
+            },
+            "required": [
+              "user",
+              "assistant"
+            ],
+            "additionalProperties": false
+          },
+          "default": []
+        },
+        "situational": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          },
+          "default": {},
+          "description": "Reaksi pada situasi: { situasi: reaksi }"
+        },
+        "rules": {
+          "type": "object",
+          "properties": {
+            "do": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "default": []
+            },
+            "dont": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "default": []
+            }
+          },
+          "additionalProperties": false,
+          "default": {}
+        },
+        "boundaries": {
+          "type": "object",
+          "properties": {
+            "preset": {
+              "type": "string",
+              "enum": [
+                "none",
+                "standard",
+                "companion"
+              ],
+              "default": "standard"
+            },
+            "custom": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "default": []
+            }
+          },
+          "additionalProperties": false,
+          "default": {}
+        },
+        "runtime": {
+          "type": "object",
+          "properties": {
+            "temperature": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 2,
+              "default": 0.7
+            },
+            "top_p": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1,
+              "default": 0.95
+            },
+            "max_tokens": {
+              "type": "integer",
+              "exclusiveMinimum": 0,
+              "default": 2048
+            },
+            "targets": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "object",
+                "additionalProperties": {}
+              },
+              "default": {},
+              "description": "Override per harness, mis. targets.ollama.base_model"
+            }
+          },
+          "additionalProperties": false,
+          "default": {}
+        },
+        "meta": {
+          "type": "object",
+          "properties": {
+            "avatar": {
+              "type": "object",
+              "properties": {
+                "icon": {
+                  "type": "string",
+                  "maxLength": 4,
+                  "default": "AI"
+                },
+                "color": {
+                  "type": "string",
+                  "default": "#38BDF8"
+                },
+                "shape": {
+                  "type": "string",
+                  "enum": [
+                    "circle",
+                    "square",
+                    "hexagon"
+                  ],
+                  "default": "hexagon"
+                }
+              },
+              "additionalProperties": false,
+              "default": {}
+            },
+            "license": {
+              "type": "string"
+            },
+            "homepage": {
+              "type": "string"
+            }
+          },
+          "additionalProperties": false,
+          "default": {}
+        },
+        "custom": {
+          "type": "object",
+          "additionalProperties": {},
+          "default": {}
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "character",
+        "voice"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}

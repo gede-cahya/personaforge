@@ -1,41 +1,44 @@
 import type { HarnessAdapter, HarnessOutput } from "./base.ts";
-import type { PersonaSpec } from "../schema/ups.ts";
+import type { PromptIR } from "../core/ir.ts";
+import { targetConfig } from "../core/ir.ts";
+import { renderPrompt } from "../core/render.ts";
+import { escapeModelfileTriple } from "../core/escape.ts";
 
 export class OllamaAdapter implements HarnessAdapter {
   readonly id = "ollama";
   readonly name = "Ollama Modelfile Harness";
-  readonly description = "Modelfile siap deploy ke runtime Ollama lokal";
+  readonly description = "Modelfile siap deploy ke runtime Ollama lokal (ollama create & ollama run)";
+  readonly category = "chat-api";
 
-  compile(persona: PersonaSpec): HarnessOutput {
-    const baseModel = persona.harness_hints.preferred_models[0] || "qwen2.5-coder:32b";
-    const { identity, linguistic_style, reasoning_protocol, harness_hints } = persona;
+  compile(ir: PromptIR): HarnessOutput {
+    const ollamaCfg = targetConfig(ir, "ollama");
+    const baseModel = ollamaCfg.base_model || (ir.agentic ? "qwen2.5-coder:7b" : "qwen2.5:7b");
+    const numCtx = ollamaCfg.num_ctx || (ir.agentic ? 16384 : 8192);
 
-    const systemText = `You are ${persona.name}, ${identity.title}.\n\n` +
-      `${identity.bio}\n\n` +
-      `Tone: ${linguistic_style.tone}\n` +
-      `Reasoning: ${reasoning_protocol.mode}\n` +
-      `Constraints:\n${linguistic_style.forbidden_patterns.map(p => `- ${p}`).join("\n")}`;
+    const systemText = renderPrompt(ir, { style: "markdown" });
 
     const content = `FROM ${baseModel}
 
 # Runtime Hyperparameters
-PARAMETER temperature ${harness_hints.temperature}
-PARAMETER top_p ${harness_hints.top_p}
-PARAMETER num_ctx 8192
+PARAMETER temperature ${ir.runtime.temperature}
+PARAMETER top_p ${ir.runtime.top_p}
+PARAMETER num_ctx ${numCtx}
 
 # System Instructions
 SYSTEM """
-${systemText}
+${escapeModelfileTriple(systemText)}
 """
 `;
 
     return {
       harnessId: this.id,
-      filename: `Modelfile.${persona.id}`,
+      filename: `Modelfile.${ir.persona.id}`,
       mimeType: "text/plain",
       content,
       metadata: {
         baseModel,
+        numCtx,
+        temperature: ir.runtime.temperature,
       },
     };
   }

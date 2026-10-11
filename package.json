@@ -1,6 +1,6 @@
 {
   "name": "personaforge",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "Universal Persona AI Engine for Multi-Agentic Harnesses",
   "main": "src/index.ts",
   "bin": {
@@ -9,7 +9,9 @@
   "type": "module",
   "scripts": {
     "start": "bun run bin/personaforge.ts",
-    "build": "bun build --compile --minify ./bin/personaforge.ts --outfile personaforge",
+    "embed": "bun run scripts/embed-presets.ts",
+    "gen:schema": "bun run scripts/generate-json-schema.ts",
+    "build": "bun run embed && bun build --compile --minify ./bin/personaforge.ts --outfile personaforge",
     "test": "bun test"
   },
   "keywords": [
@@ -34,6 +36,8 @@
     "picocolors": "^1.1.1"
   },
   "devDependencies": {
-    "@types/bun": "latest"
+    "@types/bun": "latest",
+    "typescript": "^7.0.2",
+    "zod-to-json-schema": "^3.25.2"
   }
 }

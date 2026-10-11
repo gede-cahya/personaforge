@@ -1,15 +1,18 @@
 import type { HarnessAdapter, HarnessOutput } from "./base.ts";
-import type { PersonaSpec } from "../schema/ups.ts";
+import type { PromptIR } from "../core/ir.ts";
 import type { CustomHarnessSpec } from "../schema/custom-harness.ts";
+import { renderPrompt } from "../core/render.ts";
+import { escapePyTriple, safeIdentifier } from "../core/escape.ts";
 
 /**
  * Dynamic & Declarative Custom Harness Adapter
- * Mengompilasi persona ke format harness kustom apa pun yang didefinisikan pengguna.
+ * Mengompilasi Prompt IR ke format harness kustom apa pun yang didefinisikan pengguna.
  */
 export class CustomHarnessAdapter implements HarnessAdapter {
   readonly id: string;
   readonly name: string;
   readonly description: string;
+  readonly category = "custom" as const;
   private spec: CustomHarnessSpec;
 
   constructor(spec: CustomHarnessSpec) {
@@ -19,22 +22,21 @@ export class CustomHarnessAdapter implements HarnessAdapter {
     this.spec = spec;
   }
 
-  compile(persona: PersonaSpec): HarnessOutput {
+  compile(ir: PromptIR): HarnessOutput {
     let content = "";
+    const systemPrompt = renderPrompt(ir, { style: "markdown" });
 
-    // Jika pengguna menyediakan custom_template lengkap dengan interpolasi variabel
     if (this.spec.custom_template) {
-      content = this.interpolateTemplate(this.spec.custom_template, persona);
+      content = this.interpolateTemplate(this.spec.custom_template, ir, systemPrompt);
     } else {
-      // Susun otomatis berdasarkan sections deklaratif
-      content = this.buildStructuredContent(persona);
+      content = this.buildStructuredContent(ir, systemPrompt);
     }
 
-    const filename = this.spec.default_filename.replace("{id}", persona.id);
+    const filename = this.spec.default_filename.replace("{id}", ir.persona.id);
 
     return {
       harnessId: this.id,
-      filename: filename.includes(".") ? filename : `${persona.id}.${this.spec.output_format}`,
+      filename: filename.includes(".") ? filename : `${ir.persona.id}.${this.spec.output_format}`,
       mimeType: this.resolveMimeType(this.spec.output_format),
       content,
       metadata: {
@@ -44,25 +46,31 @@ export class CustomHarnessAdapter implements HarnessAdapter {
     };
   }
 
-  private interpolateTemplate(template: string, persona: PersonaSpec): string {
+  private interpolateTemplate(template: string, ir: PromptIR, systemPrompt: string): string {
+    const { persona, runtime } = ir;
+    const { character, voice } = persona;
+
     const replacements: Record<string, string> = {
       "{{id}}": persona.id,
-      "{{safe_id}}": persona.id.replace(/-/g, "_"),
+      "{{safe_id}}": safeIdentifier(persona.id),
       "{{name}}": persona.name,
-      "{{title}}": persona.identity.title,
-      "{{bio}}": persona.identity.bio,
-      "{{lore}}": persona.identity.lore.map((l) => `- ${l}`).join("\n"),
-      "{{tone}}": persona.linguistic_style.tone,
-      "{{vocabulary}}": persona.linguistic_style.vocabulary_level,
-      "{{conciseness}}": String(persona.linguistic_style.conciseness),
-      "{{catchphrases}}": persona.linguistic_style.catchphrases.map((c) => `- "${c}"`).join("\n"),
-      "{{forbidden}}": persona.linguistic_style.forbidden_patterns.map((p) => `- DO NOT: ${p}`).join("\n"),
-      "{{reasoning_mode}}": persona.reasoning_protocol.mode,
-      "{{temperature}}": String(persona.harness_hints.temperature),
-      "{{top_p}}": String(persona.harness_hints.top_p),
-      "{{max_tokens}}": String(persona.harness_hints.max_tokens),
-      "{{preferred_models}}": persona.harness_hints.preferred_models.join(", "),
-      "{{capabilities}}": persona.harness_hints.agentic_capabilities.join(", "),
+      "{{title}}": persona.tagline || ir.role?.name || "Agent",
+      "{{tagline}}": persona.tagline || "",
+      "{{bio}}": character.bio,
+      "{{lore}}": character.backstory.map((l) => `- ${l}`).join("\n"),
+      "{{backstory}}": character.backstory.map((l) => `- ${l}`).join("\n"),
+      "{{tone}}": voice.tone,
+      "{{vocabulary}}": voice.register,
+      "{{conciseness}}": String(voice.verbosity),
+      "{{system_prompt}}": systemPrompt,
+      "{{catchphrases}}": voice.catchphrases.map((c) => `- "${c}"`).join("\n"),
+      "{{forbidden}}": persona.rules.dont.map((p) => `- DO NOT: ${p}`).join("\n"),
+      "{{reasoning_mode}}": ir.role?.reasoning.mode || "reflect_and_verify",
+      "{{temperature}}": String(runtime.temperature),
+      "{{top_p}}": String(runtime.top_p),
+      "{{max_tokens}}": String(runtime.max_tokens),
+      "{{capabilities}}": (ir.role?.capabilities ?? []).join(", "),
+      "{{escape_py_system_prompt}}": escapePyTriple(systemPrompt),
     };
 
     let result = template;
@@ -72,7 +80,7 @@ export class CustomHarnessAdapter implements HarnessAdapter {
     return result;
   }
 
-  private buildStructuredContent(persona: PersonaSpec): string {
+  private buildStructuredContent(ir: PromptIR, systemPrompt: string): string {
     const parts: string[] = [];
     const { sections, tool_calling_convention } = this.spec;
 
@@ -80,40 +88,7 @@ export class CustomHarnessAdapter implements HarnessAdapter {
       parts.push(sections.header);
     }
 
-    // Identity Section
-    parts.push(sections.identity_prefix + 
-      `Name: ${persona.name}\nRole: ${persona.identity.title}\nBio: ${persona.identity.bio}\n` +
-      (persona.identity.lore.length > 0 ? `Lore:\n${persona.identity.lore.map(l => `- ${l}`).join("\n")}\n` : "")
-    );
-
-    // Psychometrics Section
-    parts.push(sections.psychometrics_prefix +
-      `Openness: ${persona.psychometrics.openness}\n` +
-      `Conscientiousness: ${persona.psychometrics.conscientiousness}\n` +
-      `Extraversion: ${persona.psychometrics.extraversion}\n` +
-      `Agreeableness: ${persona.psychometrics.agreeableness}\n` +
-      `Neuroticism: ${persona.psychometrics.neuroticism}\n`
-    );
-
-    // Linguistic Style Section
-    parts.push(sections.style_prefix +
-      `Tone: ${persona.linguistic_style.tone}\n` +
-      `Vocabulary: ${persona.linguistic_style.vocabulary_level}\n` +
-      `Conciseness: ${persona.linguistic_style.conciseness}\n` +
-      (persona.linguistic_style.catchphrases.length > 0 
-        ? `Catchphrases:\n${persona.linguistic_style.catchphrases.map(c => `- "${c}"`).join("\n")}\n` 
-        : "") +
-      (persona.linguistic_style.forbidden_patterns.length > 0 
-        ? `Forbidden:\n${persona.linguistic_style.forbidden_patterns.map(p => `- ${p}`).join("\n")}\n` 
-        : "")
-    );
-
-    // Reasoning Section
-    parts.push(sections.reasoning_prefix +
-      `Mode: ${persona.reasoning_protocol.mode}\n` +
-      `Step-by-step: ${persona.reasoning_protocol.thought_process.step_by_step_mandatory}\n` +
-      `Verify: ${persona.reasoning_protocol.thought_process.verify_edge_cases.join(", ")}\n`
-    );
+    parts.push(systemPrompt);
 
     // Tools Convention Section
     if (tool_calling_convention.type !== "none") {
@@ -133,7 +108,7 @@ export class CustomHarnessAdapter implements HarnessAdapter {
       parts.push(sections.footer);
     }
 
-    return parts.join("\n");
+    return parts.join("\n\n");
   }
 
   private resolveMimeType(format: string): string {

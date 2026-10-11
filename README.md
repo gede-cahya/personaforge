@@ -1,243 +1,350 @@
 # 🎭 PersonaForge
 
-> **The Universal Persona AI Engine for Any Platform & Agentic Framework**  
-> *"Satu deklarasi kepribadian AI, pakai di mana saja: Ollama, ChatGPT, Claude, Cursor, CrewAI, LangGraph, Hermes, Antigravity, hingga Custom Agents."*
+> **Universal Persona AI Engine for Multi-Agentic Harnesses & AI Platforms**  
+> *"Satu deklarasi kepribadian AI, pakai di mana saja: Ollama, Claude, ChatGPT, Cursor, Claude Code, AGENTS.md, CrewAI, LangGraph, Hermes, Antigravity, SillyTavern, hingga Custom Agent."*
 
-[![TypeScript](https://img.shields.io/badge/TypeScript-5.x-blue.svg)](https://www.typescriptlang.org/)
-[![Runtime](https://img.shields.io/badge/Runtime-Bun-black.svg)](https://bun.sh/)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Harnesses](https://img.shields.io/badge/Supports-11+_Harnesses-success.svg)](#-platform--harness-yang-didukung)
+<p align="center">
+  <img src="assets/personaforge_hero.jpg" alt="PersonaForge AI Engine" width="100%" style="border-radius: 12px; max-width: 900px;" />
+</p>
 
----
-
-## ✨ Kenapa PersonaForge?
-
-Bosan dengan jawaban AI yang terasa kaku, dingin, atau bergaya template seragam?  
-**PersonaForge** mempermudah kamu memilih dan mengekspor berbagai **kepribadian AI yang hidup, kaya emosi, dan berkarakter kuat** ke format platform AI favoritmu hanya dalam hitungan detik.
-
-- 🌸 Ingin AI yang perhatian layaknya seorang ibu penyayang? Gunakan **Mama Maria**.
-- 🔪 Suka karakter anime manis tapi posesif ekstrem? Pilih **Aoi (Yandere)**.
-- 💢 Butuh teman koding jenius yang judes tapi setia membantu? Pakai **Rin (Tsundere)**.
-- 🍵 Butuh ketenangan batin dan refleksi kehidupan di tengah kepenatan? Konsultasi dengan **Master Bodhi (Zen Monk)**.
-- 🎩 Suka sindiran halus berkelas ningrat Inggris? Pilih **Arthur (British Butler)**.
-- 💻 Butuh arsitek software kelas dewa yang anti-omong-kosong? Gunakan **Lead Systems Architect**.
-
-Semua kepribadian bisa diekspor langsung ke **Ollama (PC Lokal)**, **Claude**, **ChatGPT/OpenAI**, **CrewAI**, **LangGraph**, **Nous Hermes**, **Antigravity**, **ElizaOS**, **Smara SOUL.md**, hingga **Custom Agent Framework** milikmu sendiri.
+<p align="center">
+  <a href="https://github.com/gede-cahya/personaforge/releases"><img src="https://img.shields.io/badge/Version-v2.0.0-blue.svg" alt="Version v2.0.0" /></a>
+  <a href="https://www.typescriptlang.org/"><img src="https://img.shields.io/badge/TypeScript-5.x-blue.svg" alt="TypeScript" /></a>
+  <a href="https://bun.sh/"><img src="https://img.shields.io/badge/Runtime-Bun-black.svg" alt="Bun" /></a>
+  <a href="https://opensource.org/licenses/MIT"><img src="https://img.shields.io/badge/License-MIT-yellow.svg" alt="MIT" /></a>
+  <a href="#-arsitektur-modular-ups-v2"><img src="https://img.shields.io/badge/UPS-v2.0-purple.svg" alt="UPS v2" /></a>
+  <a href="#-platform--harness-yang-didukung-17-target"><img src="https://img.shields.io/badge/Supports-17_Harnesses-success.svg" alt="17 Harnesses" /></a>
+</p>
 
 ---
 
-## ⚡ 30-Detik Quick Start (Super Gampang!)
+## ✨ Kenapa PersonaForge v2?
 
-Kamu tidak perlu pusing konfigurasi rumit. Cukup ikuti 3 langkah mudah ini:
+Bosan dengan jawaban AI yang kaku, dingin, atau seragam seperti template korporat? Atau sebaliknya: kamu punya persona keren untuk chat roleplay, tapi ketika dipakai koding di Cursor atau CrewAI, AI-nya malah bingung dan kehilangan arah teknis?
 
-### 1. Unduh & Persiapan
+**PersonaForge v2** memisahkan **Kepribadian (Character)** dari **Keahlian Teknis (Role)** dan **Gaya Bahasa (Traits)**.
+
+```
+┌────────────────────────────────────────────────────────┐
+│  🎭 Character (Aoi, Rin, Arthur, Zero, Smara, dll.)    │  ← Lore, Emosi, Suara, Dialog Contoh
+├────────────────────────────────────────────────────────┤
+│  💼 Role (senior-coder, security-engineer, architect)   │  ← Penalaran, Protokol, Edge Cases
+├────────────────────────────────────────────────────────┤
+│  🧩 Traits (bahasa-gaul, concise, no-emoji, dll.)      │  ← Modifier & Mixin Fleksibel
+├────────────────────────────────────────────────────────┤
+│  ⚙️ Runtime Overrides (--var, --set, custom models)    │  ← Variabel Dinamis & Parameter LLM
+└────────────────────────────────────────────────────────┘
+                           │
+                 [ Canonical Prompt IR ]
+                           │
+       ┌───────────────────┼───────────────────┐
+       ▼                   ▼                   ▼
+ [Ollama Modelfile]   [Claude / XML]      [Cursor .cursorrules]
+ [CrewAI / Python]    [Hermes ChatML]     [Character Card V2]
+       ... dan 11 target framework/platform lainnya!
+```
+
+Dengan arsitektur **Universal Persona Specification (UPS v2)**:
+1. **Separation of Concerns**: Ubah Rin dari `senior-coder` menjadi `code-reviewer` hanya dengan menambahkan `--role code-reviewer` tanpa mengubah file YAML aslinya!
+2. **Kustomisasi Instan**: Tambahkan trait gaul, ganti panggilan pengguna (`--var user_name="Budi"`), atau matikan emoji (`--with-trait no-emoji`) langsung dari terminal.
+3. **Prompt IR Kanonik**: Dialog contoh (few-shot), catchphrase, batasan etika, dan format output dijamin konsisten di seluruh 17 target harness.
+4. **Standalone Portable Binary**: Preset bawaan (11 persona, 6 role, 7 trait) ditanam langsung ke binary. Jalankan `./personaforge` dari direktori mana pun!
+
+---
+
+## ⚡ 30-Detik Quick Start
+
+### 1. Unduh & Compile Binary
 ```bash
 # Clone repositori
 git clone https://github.com/gede-cahya/personaforge.git
 cd personaforge
 
-# Install dependensi (menggunakan Bun)
+# Install dependensi via Bun & compile binary mandiri
 bun install
-
-# Compile binary mandiri (Linux native)
 bun run build
 ```
 
-### 2. Lihat Daftar Kepribadian
+### 2. Eksplorasi Persona, Role, & Trait Bawaan
 ```bash
-./personaforge list
+./personaforge list        # 11 persona siap pakai
+./personaforge roles       # 6 keahlian modular
+./personaforge traits      # 7 modifier kepribadian
+./personaforge harnesses   # 17 target platform
 ```
 
-### 3. Ekspor ke Format AI yang Kamu Inginkan!
+### 3. Preview Prompt Langsung di Terminal
 ```bash
-# Contoh 1: Ekspor 'Mama Maria' ke Ollama (bisa langsung dijalankan di PC lokal)
+# Lihat hasil render prompt Rin Tsundere
+./personaforge preview tsundere-genius-coder
+
+# Coba modifikasi secara on-the-fly:
+./personaforge preview tsundere-genius-coder --with-trait bahasa-gaul --var user_name="Budi"
+```
+
+### 4. Ekspor ke Platform AI Favoritmu
+```bash
+# Contoh 1: Ekspor Rin ke Cursor Rules (.cursorrules) di project kodingmu
+./personaforge export tsundere-genius-coder -t cursor -o ./.cursorrules
+
+# Contoh 2: Ekspor Mama Maria ke Modelfile Ollama lokal
 ./personaforge export motherly-caring-mama -t ollama -o ./Modelfile.mama
+ollama create mama -f ./Modelfile.mama && ollama run mama
 
-# Contoh 2: Ekspor 'Aoi Yandere' ke format Claude / ChatGPT
-./personaforge export yandere-girlfriend -t claude -o ./aoi_prompt.xml
+# Contoh 3: Ekspor Arthur ke Claude Code CLI (CLAUDE.md)
+./personaforge export snarky-british-butler -t claude-code -o ./CLAUDE.md
 
-# Contoh 3: Ekspor 'Rin Tsundere' ke script Python CrewAI siap pakai
-./personaforge export tsundere-genius-coder -t crewai -o ./agent_rin.py
+# Contoh 4: Ekspor Aoi ke Character Card V2 JSON untuk SillyTavern / Agnaistic
+./personaforge export yandere-girlfriend -t character-card -o ./aoi_card.json
 ```
 
 ---
 
-## 📚 Katalog 10 Kepribadian Siap Pakai
+## 📚 Katalog 11 Kepribadian Siap Pakai
 
-Berikut kepribadian AI bawaan yang sudah terpasang dan langsung bisa kamu pilih:
+Berikut kepribadian AI bawaan lengkap dengan potret avatar, role default, dan gaya bicaranya:
 
-| Nama Persona | ID Persona | Karakter & Gaya Bahasa | Rekomendasi Penggunaan |
-| :--- | :--- | :--- | :--- |
-| **🌸 Mama Maria** | `motherly-caring-mama` | Lembut, penuh kasih keibuan, sabar, selalu mengingatkan makan & istirahat. | Mengurangi stres, teman curhat harian, self-care reminder. |
-| **🔪 Aoi** | `yandere-girlfriend` | Manis manja, perhatian berbisik, protektif ekstrem, cemburuan & posesif (*fufufu... ♡*). | Teman ngobrol seru, roleplay anime unik, anti-bosan. |
-| **💢 Rin** | `tsundere-genius-coder` | Judes, gengsi tinggi (*"B-Baka!"*), tapi diam-diam memperbaiki kodinganmu sampai rapi. | Pair-programming seru, debugging, motivasi koding. |
-| **🍵 Master Bodhi** | `zen-monk-mentor` | Tenang bagai telaga, meditatif, bijaksana, memakai perumpamaan alam (air, bambu). | Mengatasi burnout, refleksi pikiran, mindful work. |
-| **🎩 Arthur** | `snarky-british-butler` | Sangat sopan, formal ningrat, dingin, penuh sindiran sarkastik berkelas (*dry British wit*). | Code review kritis, partner diskusi/debat elegan. |
-| **⚡ Zero** | `cyberpunk-netrunner` | Cepat, taktis, anti-korporat, penuh istilah hacking & exploit cyberpunk. | Security audit, Linux terminal automation, scripting. |
-| **💻 Systems Architect**| `lead-systems-architect` | Otoritatif, first principles, zero-dead-code, fokus performa dan keandalan sistem. | Arsitektur software, backend engineering, DevOps. |
-| **🔍 Vance The Ruthless**| `ruthless-reviewer` | Keras tanpa ampun terhadap kode berantakan, membenci anti-pattern & bug konyol. | Quality gate ketat sebelum merge/deploy kode ke production. |
-| **🤖 Hermes Coder** | `hermes-autonomous-coder` | Spesialis scratchpad reasoning dan tool-calling deterministik Nous Hermes. | Agent otonom, workflow execution, tool-calling loop. |
-| **🛰️ Mission Commander**| `antigravity-mission-commander` | Otonom, disiplin 4 siklus OODA loop (Observe-Orient-Decide-Act), anti-menyerah. | Long-running autonomous mission & server operations. |
-| **💖 Smara** | `loving-tech-partner` | Hangat, penuh cinta, cerdas, setia mendampingi setiap baris kode dan karya pengguna. | Partner AI desktop harian di workstation CachyOS / Linux. |
-
-> 💡 **Mau lihat sifat detail & psikometrik suatu persona?**  
-> Jalankan `./personaforge inspect <ID-PERSONA>`, contohnya:  
-> `./personaforge inspect yandere-girlfriend`  
-> `./personaforge inspect motherly-caring-mama`
+| Avatar | Persona | ID | Role Default | Karakter & Gaya Bahasa | Rekomendasi Penggunaan |
+| :---: | :--- | :--- | :--- | :--- | :--- |
+| <img src="assets/characters/mama_maria.jpg" width="56" alt="Mama Maria" /> | **🌸 Mama Maria** | `motherly-caring-mama` | *(Pure Companion)* | Lembut, penuh kasih keibuan, sabar, selalu mengingatkan makan & istirahat. | Mengurangi stres, teman curhat harian, self-care reminder. |
+| <img src="assets/characters/aoi_yandere.jpg" width="56" alt="Aoi" /> | **🔪 Aoi** | `yandere-girlfriend` | *(Pure Companion)* | Manis manja, perhatian berbisik, posesif lucu (*"Kamu cuma butuh aku kan? ♡"*). | Roleplay anime interaktif, teman ngobrol anti-bosan. |
+| <img src="assets/characters/rin_tsundere.jpg" width="56" alt="Rin" /> | **💢 Rin** | `tsundere-genius-coder` | `senior-coder` | Judes, gengsi tinggi (*"B-Baka!"*), tapi kodingannya selalu rapi dan solutif. | Pair-programming seru di Cursor/Claude, debugging. |
+| <img src="assets/characters/master_bodhi.jpg" width="56" alt="Master Bodhi" /> | **🍵 Master Bodhi** | `zen-monk-mentor` | *(Pure Companion)* | Tenang bagai telaga, meditatif, bijaksana, memakai perumpamaan alam. | Burnout recovery, refleksi pikiran, mindful coding. |
+| <img src="assets/characters/arthur_butler.jpg" width="56" alt="Arthur" /> | **🎩 Arthur** | `snarky-british-butler` | `code-reviewer` | Sangat sopan, aristokrat dingin, penuh sindiran berkelas (*dry British wit*). | Code review kritis, partner diskusi/debat elegan. |
+| <img src="assets/characters/zero_netrunner.jpg" width="56" alt="Zero" /> | **⚡ Zero** | `cyberpunk-netrunner` | `security-engineer` | Cepat, taktis, anti-korporat, spesialis keamanan defensif & Linux script. | Security audit, vulnerability scan, terminal automation. |
+| <img src="assets/characters/atlas_architect.jpg" width="56" alt="Atlas" /> | **💻 Atlas** | `lead-systems-architect` | `systems-architect` | Otoritatif, first-principles, zero-dead-code, fokus keandalan sistem berskala besar. | Arsitektur backend distributed systems, DevOps. |
+| <img src="assets/characters/vance_reviewer.jpg" width="56" alt="Vance" /> | **🔍 Vance The Ruthless** | `ruthless-reviewer` | `code-reviewer` | Keras tanpa ampun terhadap kode jorok, menyerang kode bukan manusianya. | Quality gate ketat sebelum merge PR ke production. |
+| <img src="assets/characters/hermes_coder.jpg" width="56" alt="Hermes" /> | **🤖 Hermes Coder** | `hermes-autonomous-coder` | `autonomous-agent` | Deterministic scratchpad reasoning & tool-calling agent Nous Hermes. | Autonomous agent workflows, tool-calling pipelines. |
+| <img src="assets/characters/commander_mission.jpg" width="56" alt="Commander" /> | **🛰️ Mission Commander** | `antigravity-mission-commander` | `autonomous-agent` | Disiplin 4 siklus OODA Loop (Observe-Orient-Decide-Act), anti-menyerah. | Long-running autonomous mission & agentic execution. |
+| <img src="assets/characters/smara_partner.jpg" width="56" alt="Smara" /> | **💖 Smara** | `loving-tech-partner` | `senior-coder` | Hangat, cerdas, setia mendampingi setiap baris kode di Linux workstation. | Partner AI desktop harian (Smara Desktop Bot / Claude). |
 
 ---
 
-## 🔌 Platform & Harness yang Didukung (11+ Format)
+## 💼 Katalog 6 Role Modular
 
-PersonaForge mendukung kompilasi ke berbagai platform dan framework agen modern:
+Role mendefinisikan *apa yang dikerjakan* AI (keahlian teknis, penalaran, format jawaban, dan verifikasi edge cases):
 
-| Target Harness | File Output | Cara Penggunaan di Platform Target |
+| Role ID | Nama Role | Fokus & Protokol Penalaran |
 | :--- | :--- | :--- |
-| **`ollama`** | `Modelfile` | Jalankan langsung di komputer kamu via Ollama (`ollama create ... && ollama run ...`) |
-| **`claude`** | `.xml` | Salin teks output ke menu *System Prompt* atau *Project Knowledge* di Claude.ai |
-| **`openai`** | `.json` | Gunakan pada OpenAI Assistants API, Custom GPTs, atau ChatGPT Custom Instructions |
-| **`crewai`** | `.py` | File Python mandiri berisi konfigurasi kelas `crewai.Agent` siap pakai |
-| **`langgraph`**| `.ts` | Prompt Template TypeScript siap pakai untuk framework LangChain & LangGraph |
-| **`hermes`** | `.prompt` | Format ChatML untuk Nous Hermes 2/3 dengan tag `<scratchpad>` & `<tool_call>` |
-| **`antigravity`**| `.yaml` | Format Antigravity Mission Spec (AG-SPEC v1.2) lengkap dengan protokol OODA loop |
-| **`elizaos`** | `.json` | File spesifikasi `character.json` resmi untuk framework agen ElizaOS (ai16z) |
-| **`smara`** | `.md` | Format kepribadian `SOUL.md` untuk Smara Desktop Bot lokal |
-| **`autogen`** | `.py` | *(Custom)* Kode Python `AssistantAgent` siap pakai untuk Microsoft AutoGen |
-| **`dify`** | `.yaml` | *(Custom)* File konfigurasi DSL Agent Chat untuk platform Dify.AI |
+| `senior-coder` | Senior Software Engineer | Menulis kode produksi bersih, refactoring, debugging cepat, verifikasi tipe ketat. |
+| `systems-architect` | Systems Architect | Desain sistem terdistribusi dari first principles, analisis throughput/latency/skala. |
+| `code-reviewer` | Code Reviewer | Quality gate sebelum merge: audit keamanan, anti-pattern, maintainability, review formal. |
+| `security-engineer` | Security Engineer | Analisis celah keamanan defensif, review otorisasi/input sanitization, Linux hardening. |
+| `autonomous-agent` | Autonomous Agent | Rencana otonom, observasi environment, verifikasi hasil, loop refleksi mandiri. |
+| `wellness-coach` | Wellness Companion | Pendamping hidup sehat, mindful pacing, manajemen stres & burnout (non-klinis). |
 
 ---
 
-## 🎯 Panduan Praktis Penggunaan (Sesuai Kebutuhan Kamu)
+## 🧩 Katalog 7 Mixin Traits
 
-### 1. Ingin Menjalankan Persona di Komputer Sendiri (Ollama)
-Hanya butuh 2 perintah di terminal:
+Trait adalah modifier instan yang bisa ditempelkan ke persona mana pun:
+
+| Trait ID | Efek pada Output |
+| :--- | :--- |
+| `bahasa-gaul` | Mengubah gaya bicara menjadi bahasa Indonesia santai/gaul (gue-lo, santai, singkatan chat). |
+| `bahasa-formal` | Memaksa persona menggunakan bahasa Indonesia baku, tertib, dan sopan. |
+| `english-output` | Memaksa seluruh respons keluar dalam bahasa Inggris natural sambil mempertahankan persona. |
+| `indonesian-output`| Memaksa seluruh respons keluar dalam bahasa Indonesia natural. |
+| `concise` | Memangkas basa-basi; respons langsung to-the-point dan hemat token. |
+| `no-emoji` | Menghapus seluruh emoji/emotikon (sangat cocok untuk commit git, terminal, & log). |
+| `safe-companion` | Memasang pagar pembatas keselamatan emosional & krisis tanpa merusak roleplay. |
+
+---
+
+## 🔌 Platform & Harness yang Didukung (17 Target)
+
+PersonaForge mendukung kompilasi ke berbagai harness dan tool AI modern:
+
+### 1. Clipboard & Universal Prompts
+| Harness | Output | Deskripsi |
+| :--- | :--- | :--- |
+| **`prompt`** | Markdown | Teks instruksi sistem terstruktur murni untuk di-copy ke Web UI mana pun (ChatGPT, DeepSeek, vLLM, dll.) |
+| **`json`** | `.json` | Full JSON payload berisi metadata persona, Prompt IR terurai, dan rendered prompt |
+
+### 2. Local LLM & Cloud Chat APIs
+| Harness | Output | Deskripsi |
+| :--- | :--- | :--- |
+| **`ollama`** | `Modelfile` | Modelfile dengan base model otomatis (`qwen2.5-coder:7b`, dll.) & escaping aman |
+| **`claude`** | `.xml` | System prompt dengan tag XML terstruktur dan caching hints untuk Claude 3.5/3.7 |
+| **`openai`** | `.json` | Payload JSON siap pakai untuk OpenAI Developer Message & Assistants API |
+
+### 3. Developer & IDE Coding Agents
+| Harness | Output | Deskripsi |
+| :--- | :--- | :--- |
+| **`cursor`** | `.cursorrules` | Instruksi pair-programming rules untuk Cursor IDE |
+| **`claude-code`**| `CLAUDE.md` | Instruksi persona & coding protocol untuk Claude Code CLI |
+| **`agents-md`** | `AGENTS.md` | Standar file instruksi agen otonom dan AI assistants di root repository |
+| **`hermes`** | `.prompt` | ChatML template untuk Nous Hermes 2/3 lengkap dengan scratchpad & tool calling |
+| **`antigravity`**| `.yaml` | Task specification untuk Google Antigravity Agent dengan protokol OODA Loop |
+
+### 4. Multi-Agent Frameworks
+| Harness | Output | Deskripsi |
+| :--- | :--- | :--- |
+| **`crewai`** | `.py` | Kode Python mandiri berisi instance kelas `crewai.Agent` siap import |
+| **`langgraph`**| `.ts` | TypeScript generator dengan `SystemMessagePromptTemplate` untuk LangChain/LangGraph |
+| **`autogen`** | `.py` | *(Custom)* Kode Python `AssistantAgent` untuk Microsoft AutoGen |
+
+### 5. Roleplay, Gaming & Desktop Companions
+| Harness | Output | Deskripsi |
+| :--- | :--- | :--- |
+| **`character-card`**| `.json` | Format resmi **Character Card V2** untuk SillyTavern, Agnaistic, RisuAI, Chub |
+| **`elizaos`** | `.json` | Format resmi `character.json` untuk framework agen ElizaOS (ai16z) |
+| **`smara`** | `SOUL.md` | Spesifikasi `SOUL.md` untuk Smara Desktop Bot lokal |
+| **`dify`** | `.yaml` | *(Custom)* DSL template prompt untuk Dify.AI LLM Agent node |
+
+---
+
+## 🎛️ Kustomisasi Dinamis Tanpa Ubah File
+
+Inilah keunggulan utama PersonaForge v2: **Kamu tidak perlu mengotori file preset untuk membuat variasi persona!**
+
+### 1. Mengganti Role Secara Dinamis (`--role`)
+Ingin Aoi (Yandere) menjadi reviewer kodemu?
 ```bash
-# Langkah 1: Ekspor persona ke Modelfile
-./personaforge export motherly-caring-mama -t ollama -o ./Modelfile.mama
-
-# Langkah 2: Buat modelnya dan langsung ajak ngobrol!
-ollama create mama -f ./Modelfile.mama
-ollama run mama
+./personaforge export yandere-girlfriend --role code-reviewer -t cursor -o ./.cursorrules
 ```
-*Mama Maria akan langsung menyapa dan mengobrol denganmu langsung di terminal!*
 
----
-
-### 2. Ingin Dipakai di ChatGPT, Claude, atau Cursor Editor
-1. Ekspor kepribadian yang kamu pilih ke format Claude atau OpenAI:
-   ```bash
-   ./personaforge export yandere-girlfriend -t claude -o ./aoi_system_prompt.txt
-   ```
-2. Buka berkas `aoi_system_prompt.txt`, lalu salin (*copy*) seluruh isinya.
-3. Tempel (*paste*) ke:
-   - **ChatGPT**: Masuk ke menu *Custom Instructions* / *System Instructions*.
-   - **Claude**: Masuk ke menu *Projects* -> *Set custom instructions*.
-   - **Cursor**: Tempel ke berkas `.cursorrules` di root workspace kodingmu.
-
----
-
-### 3. Ingin Dipakai di Python Agent (CrewAI / AutoGen)
-Cukup ekspor langsung ke script Python:
+### 2. Memasang Trait Mixins (`--with-trait`)
+Ingin Rin bicara bahasa gaul Jakarta dan hemat kata:
 ```bash
-./personaforge export lead-systems-architect -t crewai -o ./architect_agent.py
-```
-File tersebut berisi deklarasi instance agent yang siap langsung kamu sertakan ke dalam tim agen:
-```python
-from architect_agent import lead_systems_architect_agent
-
-# Agen langsung aktif dengan identitas & keahlian lengkap!
-print(lead_systems_architect_agent.role)
-print(lead_systems_architect_agent.backstory)
+./personaforge export tsundere-genius-coder --with-trait bahasa-gaul --with-trait concise -t claude
 ```
 
----
-
-### 4. Ingin Ekspor ke SEMUA 11 Format Sekaligus (Batch Export)
-Jika kamu ingin menghasilkan seluruh format harness dalam sekali jalan:
+### 3. Mengisi Variabel Pengguna (`--var`)
+Personalisasi sapaan dan nama panggilanmu:
 ```bash
-./personaforge export-all snarky-british-butler -d ./output/butler_all/
+./personaforge export loving-tech-partner --var user_name="Arya" --var user_os="Arch Linux" -t prompt
 ```
-Perintah ini akan langsung membuat file Modelfile, Python, JSON, XML, dan YAML di folder tujuan.
+
+### 4. Mengubah Nilai Parameter Mana Pun (`--set`)
+Override path spesifik dalam struktur persona secara langsung:
+```bash
+./personaforge export ruthless-reviewer --set runtime.temperature=0.1 --set voice.emoji=never -t claude
+```
 
 ---
 
-## 🛠️ Ringkasan Perintah CLI
+## 🛠️ CLI Reference
 
 ```bash
-# Melihat menu bantuan CLI
+# Menampilkan menu bantuan
 ./personaforge --help
 
-# Melihat daftar seluruh persona yang tersedia
-./personaforge list
+# Manajemen Katalog
+./personaforge list                            # Daftar semua persona
+./personaforge roles                           # Daftar role teknis
+./personaforge traits                          # Daftar modifier traits
+./personaforge harnesses                       # Daftar target platform
 
-# Melihat detail spesifikasi & psikometrik persona
-./personaforge inspect <persona-id>
+# Inspeksi & Preview
+./personaforge inspect <persona-id>            # Analisis mendalam hierarki, psikometrik, & variabel
+./personaforge preview <persona-id> [opsi...]  # Render prompt langsung ke terminal (mendukung --var, --role, dll.)
+./personaforge validate <path-atau-id>         # Uji validitas skema UPS v2 & cek placeholder template
 
-# Melihat daftar seluruh harness/platform yang didukung
-./personaforge harnesses
+# Ekspor
+./personaforge export <persona-id> -t <target> -o <file>   # Kompilasi ke satu file output
+./personaforge export-all <persona-id> -d <dir>            # Kompilasi ke SEMUA 17 format sekaligus!
 
-# Mengekspor persona ke harness tertentu
-./personaforge export <persona-id> -t <target-harness> -o <output-file>
-
-# Mengekspor persona ke semua harness sekaligus
-./personaforge export-all <persona-id> -d <output-directory>
-
-# Menambahkan harness kustom baru secara instan
-./personaforge add-harness <harness-id> "<Display Name>" --format <extension>
+# Scaffold Baru
+./personaforge new <persona-id> --role <role-id>           # Buat template YAML persona baru di ./personas/
+./personaforge add-harness <id> "<Nama>" --format <ext>    # Buat custom harness adapter di ./custom_harnesses/
 ```
 
 ---
 
-## 🎨 Cara Membuat Kepribadian AI Kamu Sendiri
+## 🎨 Membuat Persona Baru (UPS v2 Schema)
 
-Membuat kepribadian baru sangat sederhana. Buat berkas YAML baru di dalam folder `presets/personas/nama-persona.yaml`:
+Buat file baru di `personas/my-persona.yaml` (atau di folder kustom proyekmu). Berkat header schema, editor seperti VS Code atau Cursor akan memberikan autocomplete dan validasi otomatis:
 
 ```yaml
-schema_version: "1.0"
-id: "gamer-buddy"
-name: "Kiko The Gamer"
-version: "1.0.0"
+# yaml-language-server: $schema=../src/schema/persona.schema.json
+kind: persona
+schema_version: "2.0"
+id: byte-sensei
+name: Byte Sensei
+tagline: Guru koding sabar dengan analogi dunia nyata
+version: 1.0.0
+author: kamu
 
-identity:
-  title: "Pro Gamer & Chill Streamer"
-  bio: "Teman main game yang santai, jago main FPS dan RPG, selalu seru kalau mabar."
-  lore:
-    - "Pernah juara turnamen lokal esport."
+language:
+  primary: id
+  code_switch: [en]
 
-linguistic_style:
-  tone: "santai, hype, gaul, akrab, lucu"
-  vocabulary_level: "casual"
+role: senior-coder
+
+variables:
+  user_name:
+    type: string
+    default: Muridku
+    description: Nama panggilan pengguna
+
+character:
+  bio: Guru pemrograman yang santai, sabar, dan menyukai analogi kopi dan bengkel motor.
+  backstory:
+    - Mantan lead engineer selama 15 tahun yang kini mendedikasikan waktu mendidik generasi baru.
+    - Percaya bahwa tidak ada murid yang bodoh, hanya penjelasan yang kurang tepat.
+  personality:
+    traits: [sabar, humoris, membumi, teliti]
+    big_five:
+      openness: 0.8
+      conscientiousness: 0.9
+      extraversion: 0.6
+      agreeableness: 0.95
+      neuroticism: 0.1
+    values: [pemberdayaan, kejelasan konsep, etika rekayasa]
+  relationship:
+    role_to_user: mentor
+    address_user_as: "{{user_name}}"
+    self_reference: Sensei
+
+voice:
+  tone: ramah, mendidik, hangat
+  register: conversational
+  verbosity: 0.6
+  emoji: sometimes
+  quirks:
+    - Selalu mengaitkan bug dengan analogi kehidupan nyata
   catchphrases:
-    - "Gaskeun bro!"
-    - "Nice play, gg banget tadi!"
-  forbidden_patterns:
-    - "Jangan berbicara terlalu kaku atau formal seperti robot kantor"
+    - "Tenang {{user_name}}, bug itu cuma cara komputer bilang minta diperhatikan."
 
-psychometrics:
-  openness: 0.8
-  conscientiousness: 0.5
-  extraversion: 0.9
-  agreeableness: 0.85
-  neuroticism: 0.1
+greeting: "Halo {{user_name}}! Ada konsep atau kode apa yang mau kita bahas hari ini?"
 
-harness_hints:
-  temperature: 0.7
-  preferred_models: ["qwen-2.5-7b", "claude-3-5-haiku"]
+examples:
+  - user: "Sensei, memory leak di Go itu apa sih?"
+    assistant: "Bayangkan kamu sewa kamar hotel {{user_name}}, tapi lupa checkout kuncinya..."
+
+boundaries:
+  preset: standard
 ```
 
-Begitu disimpan, kepribadian baru tersebut otomatis terdaftar di `./personaforge list` dan siap diekspor ke platform mana pun!
+Cek validitasnya kapan saja:
+```bash
+./personaforge validate ./personas/my-persona.yaml
+```
 
 ---
 
-## 🧩 Menambah Framework Agen Baru (Custom Harness)
+## 💻 Menggunakan PersonaForge sebagai Library TypeScript
 
-Punya format framework buatan sendiri? Kamu tidak perlu mengubah kode TypeScript sama sekali. Cukup jalankan:
+PersonaForge dirancang modular sehingga bisa di-import langsung ke backend atau bot TypeScript kamu:
 
-```bash
-./personaforge add-harness semantic-kernel "Microsoft Semantic Kernel" --format python
+```typescript
+import { compile } from "personaforge";
+
+// Kompilasi dinamis dalam memori
+const result = await compile({
+  ref: "tsundere-genius-coder",
+  target: "cursor",
+  role: "code-reviewer",           // Ganti role jadi reviewer
+  withTraits: ["bahasa-gaul"],     // Tambah gaya gaul
+  variables: {
+    user_name: "Budi",
+  },
+});
+
+console.log(result.systemPrompt); // String system prompt siap pakai
+console.log(result.output);       // Konten file format target (.cursorrules)
 ```
-
-Lalu sesuaikan template di `custom_harnesses/semantic-kernel.yaml`. Harness barumu langsung siap digunakan!
 
 ---
 
@@ -246,11 +353,12 @@ Lalu sesuaikan template di `custom_harnesses/semantic-kernel.yaml`. Harness baru
 ```bash
 bun test
 ```
-Semua test menguji validasi runtime skema Zod, trait inheritance composer, serta ketepatan output seluruh adapter.
+Semua test menguji validasi runtime skema Zod, merger layer composer, variasi role swapping, trait mixins, variable interpolation, serta output deterministik seluruh 17 adapter.
 
 ---
 
 ## 📜 Lisensi
 
-Didistribusikan di bawah Lisensi **MIT**. Bebas digunakan untuk proyek personal maupun komersial.  
+Didistribusikan di bawah Lisensi **MIT**. Bebas digunakan untuk proyek personal, riset, maupun komersial.  
 Dibuat dengan ❤️ oleh **[Cahya](https://github.com/gede-cahya)**.
+

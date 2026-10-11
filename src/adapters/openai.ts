@@ -1,39 +1,38 @@
 import type { HarnessAdapter, HarnessOutput } from "./base.ts";
-import type { PersonaSpec } from "../schema/ups.ts";
+import type { PromptIR } from "../core/ir.ts";
+import { targetConfig } from "../core/ir.ts";
+import { renderPrompt } from "../core/render.ts";
 
 export class OpenAIAdapter implements HarnessAdapter {
   readonly id = "openai";
-  readonly name = "OpenAI Developer / Assistant Harness";
-  readonly description = "Format Developer Message & Assistants API config";
+  readonly name = "OpenAI Developer & Assistants API Harness";
+  readonly description = "Konfigurasi Developer Message & OpenAI Assistants API siap pakai";
+  readonly category = "chat-api";
 
-  compile(persona: PersonaSpec): HarnessOutput {
-    const { identity, psychometrics, linguistic_style, reasoning_protocol, harness_hints } = persona;
+  compile(ir: PromptIR): HarnessOutput {
+    const openaiCfg = targetConfig(ir, "openai");
+    const model = openaiCfg.model || "gpt-4o";
 
-    const developerMessage = `You are ${persona.name} (${identity.title}).\n\n` +
-      `BIO & BACKGROUND:\n${identity.bio}\n` +
-      (identity.lore.length > 0 ? `LORE:\n${identity.lore.map((l) => `- ${l}`).join("\n")}\n\n` : "\n") +
-      `BEHAVIORAL TRAITS:\n` +
-      `- Tone: ${linguistic_style.tone}\n` +
-      `- Conciseness: ${linguistic_style.conciseness}\n` +
-      `- Reasoning Mode: ${reasoning_protocol.mode}\n\n` +
-      `CONSTRAINTS:\n${linguistic_style.forbidden_patterns.map((p) => `- DO NOT: ${p}`).join("\n")}`;
+    const instructions = renderPrompt(ir, { style: "markdown" });
 
     const payload = {
-      name: persona.id,
-      description: `${persona.name} - ${identity.title}`,
-      model: harness_hints.preferred_models[0] || "gpt-4o",
-      temperature: harness_hints.temperature,
-      top_p: harness_hints.top_p,
-      instructions: developerMessage,
+      name: ir.persona.id,
+      description: `${ir.persona.name}${ir.persona.tagline ? ` - ${ir.persona.tagline}` : ""}`,
+      model,
+      temperature: ir.runtime.temperature,
+      top_p: ir.runtime.top_p,
+      instructions,
       metadata: {
-        persona_id: persona.id,
-        version: persona.version,
+        persona_id: ir.persona.id,
+        version: ir.persona.version,
+        role: ir.role?.id ?? "none",
+        language: ir.persona.language.primary,
       },
     };
 
     return {
       harnessId: this.id,
-      filename: `${persona.id}.openai.json`,
+      filename: `${ir.persona.id}.openai.json`,
       mimeType: "application/json",
       content: JSON.stringify(payload, null, 2),
       metadata: payload,

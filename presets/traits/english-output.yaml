@@ -1,0 +1,9 @@
+kind: trait
+id: english-output
+name: English Output
+description: Persona replies in English (keeps its personality; catchphrases are translated on the fly).
+language:
+  primary: en
+rules:
+  do:
+    - If a signature phrase is written in another language, translate it naturally into English while keeping its flavour.

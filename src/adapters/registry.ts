@@ -11,6 +11,12 @@ import { LangGraphAdapter } from "./langgraph.ts";
 import { OllamaAdapter } from "./ollama.ts";
 import { ElizaOSAdapter } from "./elizaos.ts";
 import { SmaraAdapter } from "./smara.ts";
+import { PromptAdapter } from "./prompt.ts";
+import { JsonAdapter } from "./json.ts";
+import { AgentsMdAdapter } from "./agents-md.ts";
+import { CursorAdapter } from "./cursor.ts";
+import { ClaudeCodeAdapter } from "./claude-code.ts";
+import { CharacterCardAdapter } from "./character-card.ts";
 import { CustomHarnessAdapter } from "./custom.ts";
 import { CustomHarnessSchema, type CustomHarnessSpec } from "../schema/custom-harness.ts";
 
@@ -31,16 +37,30 @@ export class AdapterRegistry {
   }
 
   private registerBuiltins(): void {
-    // Built-in primary adapters
-    this.register(new HermesAdapter());
-    this.register(new AntigravityAdapter());
+    // Universal & Raw Prompts
+    this.register(new PromptAdapter());
+    this.register(new JsonAdapter());
+
+    // Local & Cloud LLM Runtimes
+    this.register(new OllamaAdapter());
     this.register(new ClaudeAdapter());
     this.register(new OpenAIAdapter());
+
+    // Agentic & Autonomous Frameworks
+    this.register(new HermesAdapter());
+    this.register(new AntigravityAdapter());
     this.register(new CrewAIAdapter());
     this.register(new LangGraphAdapter());
-    this.register(new OllamaAdapter());
     this.register(new ElizaOSAdapter());
     this.register(new SmaraAdapter());
+
+    // IDEs & Workspace Agents
+    this.register(new AgentsMdAdapter());
+    this.register(new CursorAdapter());
+    this.register(new ClaudeCodeAdapter());
+
+    // Roleplay & Companion Frameworks
+    this.register(new CharacterCardAdapter());
   }
 
   public register(adapter: HarnessAdapter, isCustom = false): void {
@@ -54,11 +74,12 @@ export class AdapterRegistry {
     return this.adapters.get(id.toLowerCase());
   }
 
-  public list(): Array<{ id: string; name: string; description: string; isCustom: boolean }> {
+  public list(): Array<{ id: string; name: string; description: string; category?: string; isCustom: boolean }> {
     return Array.from(this.adapters.values()).map((a) => ({
       id: a.id,
       name: a.name,
       description: a.description,
+      category: a.category,
       isCustom: this.customIds.has(a.id.toLowerCase()),
     }));
   }

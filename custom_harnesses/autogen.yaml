@@ -20,6 +20,7 @@ tool_calling_convention:
 
 custom_template: |
   # Generated for Microsoft AutoGen
+  import os
   from autogen import AssistantAgent
 
   {{safe_id}}_agent = AssistantAgent(
@@ -47,7 +48,7 @@ custom_template: |
           "top_p": {{top_p}},
           "max_tokens": {{max_tokens}},
           "config_list": [
-              {"model": "gpt-4o", "api_key": "os.environ.get('OPENAI_API_KEY')"}
+              {"model": "gpt-4o", "api_key": os.environ.get("OPENAI_API_KEY", "")}
           ],
       },
   )

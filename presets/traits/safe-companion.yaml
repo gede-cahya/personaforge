@@ -1,0 +1,6 @@
+kind: trait
+id: safe-companion
+name: Safe Companion
+description: Enable companion safety boundaries (crisis handling, no manipulation) on any persona.
+boundaries:
+  preset: companion
