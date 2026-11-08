@@ -1,7 +1,7 @@
 #!/usr/bin/env bun
 import { Command } from "commander";
 import pc from "picocolors";
-import { writeFileSync, mkdirSync, existsSync } from "node:fs";
+import { writeFileSync, readFileSync, mkdirSync, existsSync } from "node:fs";
 import { resolve, dirname, join } from "node:path";
 import { parse as parseYaml } from "yaml";
 import { PersonaResolver } from "../src/core/loader.ts";
@@ -326,7 +326,79 @@ program
     }
   });
 
-// 10. Command: new (create persona from template or extend base)
+// 10. Command: set-global (Install or update global Antigravity / Gemini persona)
+program
+  .command("set-global [persona-id]")
+  .description("Set a persona as the global default for Antigravity across all current & future sessions (~/.gemini/config/AGENTS.md)")
+  .option("--var <key=value...>", "Custom variable overrides")
+  .option("--role <role>", "Override role")
+  .option("--with-trait <trait...>", "Attach traits")
+  .option("--set <path=value...>", "Direct path overrides")
+  .option("--clear", "Remove global persona from Antigravity rules")
+  .action((personaId?: string, options?: { var?: string[]; role?: string; withTrait?: string[]; set?: string[]; clear?: boolean }) => {
+    try {
+      const home = process.env.HOME || process.env.USERPROFILE || "";
+      const targets = [
+        join(home, ".gemini/config/AGENTS.md"),
+        join(home, ".gemini/GEMINI.md"),
+      ];
+
+      if (options?.clear) {
+        for (const targetPath of targets) {
+          if (!existsSync(targetPath)) continue;
+          let content = readFileSync(targetPath, "utf-8");
+          content = content.replace(/<!-- personaforge:start -->[\s\S]*?<!-- personaforge:end -->\n?/g, "").trim();
+          writeFileSync(targetPath, content + "\n", "utf-8");
+        }
+        console.log(pc.green("✔ Cleared global persona from Antigravity configuration."));
+        return;
+      }
+
+      if (!personaId) {
+        console.error(pc.red("Error: Harap tentukan ID persona yang ingin dipasang (contoh: ./personaforge set-global loving-tech-partner)"));
+        process.exit(1);
+      }
+
+      const vars = parseKeyValuePairs(options?.var);
+      const sets = parseSetPairs(options?.set);
+      const resolved = resolver.resolve(personaId, {
+        vars,
+        role: options?.role,
+        traits: options?.withTrait,
+        set: sets,
+      });
+
+      const adapter = registry.get("agents-md");
+      if (!adapter) throw new Error("Adapter 'agents-md' tidak ditemukan.");
+
+      const ir = buildIR(resolved);
+      const output = adapter.compile(ir);
+
+      const block = `\n<!-- personaforge:start -->\n<!-- persona: ${resolved.persona.id} (${resolved.persona.name}) -->\n${output.content.trim()}\n<!-- personaforge:end -->\n`;
+
+      for (const targetPath of targets) {
+        const dir = dirname(targetPath);
+        if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
+
+        let existing = existsSync(targetPath) ? readFileSync(targetPath, "utf-8") : "";
+        let updated = "";
+        if (existing.includes("<!-- personaforge:start -->")) {
+          updated = existing.replace(/<!-- personaforge:start -->[\s\S]*?<!-- personaforge:end -->/g, block.trim());
+        } else {
+          updated = existing.trim() + "\n" + block;
+        }
+        writeFileSync(targetPath, updated.trim() + "\n", "utf-8");
+      }
+
+      console.log(pc.green(pc.bold(`✔ Sukses mengaktifkan persona '${resolved.persona.name}' untuk semua sesi Antigravity!`)));
+      console.log(pc.cyan(`  Tersimpan di: ${targets.join(" & ")}`));
+    } catch (e: any) {
+      console.error(pc.red(`Error: ${e.message}`));
+      process.exit(1);
+    }
+  });
+
+// 11. Command: new (create persona from template or extend base)
 program
   .command("new <id>")
   .description("Create a new persona YAML file in ./personas/")
